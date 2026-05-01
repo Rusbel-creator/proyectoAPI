@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aplicación del clima en tiempo real con datos precisos de cualquier ciudad del mundo." />
+    <meta name="theme-color" content="#0a0a1a" />
+    <title>Skye — Clima en Tiempo Real</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Fondo animado -->
+    <div class="bg-canvas" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Aplicación principal -->
+    <div class="app-wrapper">
+
+      <!-- Encabezado -->
+      <header class="site-header">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">◈</span>
+          <span class="logo-text">Skye</span>
+        </div>
+        <p class="tagline">Clima del Mundo</p>
+      </header>
+
+      <!-- Sección principal de búsqueda -->
+      <main class="main-content">
+        <section class="search-section" aria-label="Buscar ciudad">
+          <h1 class="hero-title">
+            ¿Cómo está el<br /><em>cielo hoy?</em>
+          </h1>
+
+          <form class="search-form" id="searchForm" role="search" aria-label="Formulario de búsqueda de ciudad">
+            <div class="input-wrapper">
+              <label for="cityInput" class="sr-only">Nombre de la ciudad</label>
+              <input
+                type="search"
+                id="cityInput"
+                name="city"
+                class="city-input"
+                placeholder="Escribe una ciudad…"
+                autocomplete="off"
+                spellcheck="false"
+                aria-required="true"
+              />
+              <button type="submit" class="search-btn" aria-label="Buscar clima">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- Ciudades rápidas -->
+          <nav class="quick-cities" aria-label="Ciudades de acceso rápido">
+            <button class="quick-btn" data-city="Santo Domingo">🇩🇴 Santo Domingo</button>
+            <button class="quick-btn" data-city="New York">🇺🇸 New York</button>
+            <button class="quick-btn" data-city="Tokyo">🇯🇵 Tokyo</button>
+            <button class="quick-btn" data-city="Paris">🇫🇷 Paris</button>
+          </nav>
+        </section>
+
+        <!-- Estado de carga -->
+        <div class="loading-state" id="loadingState" aria-live="polite" aria-label="Cargando datos del clima" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Consultando el cielo…</p>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div class="error-state" id="errorState" role="alert" aria-live="assertive" hidden>
+          <span class="error-icon" aria-hidden="true">⚠</span>
+          <p id="errorMessage">Ciudad no encontrada. Intenta de nuevo.</p>
+        </div>
+
+        <!-- Tarjeta del clima -->
+        <article class="weather-card" id="weatherCard" aria-label="Datos del clima" hidden>
+
+          <!-- Cabecera de la tarjeta -->
+          <header class="card-header">
+            <div class="location-info">
+              <h2 class="city-name" id="cityName">—</h2>
+              <p class="country-name" id="countryName">—</p>
+            </div>
+            <time class="current-time" id="currentTime" datetime="">—</time>
+          </header>
+
+          <!-- Temperatura principal -->
+          <section class="temp-section" aria-label="Temperatura actual">
+            <div class="weather-icon-large" id="weatherIcon" aria-hidden="true">☀️</div>
+            <div class="temp-group">
+              <p class="temp-main" id="tempMain">—°</p>
+              <p class="weather-desc" id="weatherDesc">—</p>
+            </div>
+            <div class="temp-feels">
+              <p class="feels-label">Sensación</p>
+              <p class="feels-value" id="feelsLike">—°</p>
+            </div>
+          </section>
+
+          <!-- Detalles del clima -->
+          <section class="details-grid" aria-label="Detalles del clima">
+
+            <article class="detail-card" aria-label="Humedad">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              </div>
+              <p class="detail-label">Humedad</p>
+              <p class="detail-value" id="humidity">—%</p>
+            </article>
+
+            <article class="detail-card" aria-label="Viento">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>
+              </div>
+              <p class="detail-label">Viento</p>
+              <p class="detail-value" id="windSpeed">— km/h</p>
+            </article>
+
+            <article class="detail-card" aria-label="Visibilidad">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <p class="detail-label">Visibilidad</p>
+              <p class="detail-value" id="visibility">— km</p>
+            </article>
+
+            <article class="detail-card" aria-label="Presión atmosférica">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <p class="detail-label">Presión</p>
+              <p class="detail-value" id="pressure">— hPa</p>
+            </article>
+
+            <article class="detail-card" aria-label="Amanecer">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 22 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>
+              </div>
+              <p class="detail-label">Amanecer</p>
+              <p class="detail-value" id="sunrise">—</p>
+            </article>
+
+            <article class="detail-card" aria-label="Atardecer">
+              <div class="detail-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>
+              </div>
+              <p class="detail-label">Atardecer</p>
+              <p class="detail-value" id="sunset">—</p>
+            </article>
+
+          </section>
+
+          <!-- Rango de temperatura -->
+          <footer class="temp-range" aria-label="Rango de temperatura del día">
+            <div class="range-item">
+              <span class="range-label">↓ Mín</span>
+              <span class="range-value" id="tempMin">—°</span>
+            </div>
+            <div class="range-bar" aria-hidden="true">
+              <div class="range-fill" id="rangeFill"></div>
+            </div>
+            <div class="range-item">
+              <span class="range-label">↑ Máx</span>
+              <span class="range-value" id="tempMax">—°</span>
+            </div>
+          </footer>
+
+        </article>
+      </main>
+
+      <!-- Pie de página -->
+      <footer class="site-footer">
+        <p>Datos por <a href="https://openweathermap.org" target="_blank" rel="noopener noreferrer">OpenWeatherMap</a></p>
+      </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
