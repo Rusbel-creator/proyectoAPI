@@ -16,6 +16,10 @@ Api utilizada OpenWheatherMap link: https://openweathermap.org/
 ## Funcionalidades
 En la pagina web podran ver el clima actual de la ciudad, su sensación, su hora actual, la humedad, la velocidad aproximada del viento, la visibilidad, la presión, la hora a la que amaneció, la hora a la que va a atardecer y el rango de temperatura de la ciudad.
 
+## Preview del proyecto
+![image alt](https://github.com/Rusbel-creator/proyectoAPI/blob/b252270df0e6e2b1233e3413df7341a47787a416/Screenshot%202026-05-02%20102222.png)
+![image alt](https://github.com/Rusbel-creator/proyectoAPI/blob/b252270df0e6e2b1233e3413df7341a47787a416/Screenshot%202026-05-02%20102307.png)
+
 ## Cómo ejecutar
 1. Descargar el proyecto pulsando en el boton de code
 2. Pulsar en Download ZIP
