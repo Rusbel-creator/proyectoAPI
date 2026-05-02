@@ -9,7 +9,7 @@ Api utilizada OpenWheatherMap link: https://openweathermap.org/
 ## Tecnologías utilizadas
 <p>
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=css,html,js&perline=14" />
+    <img src="https://skillicons.dev/icons?i=html,css,js&perline=14" />
   </a>
 </p>
 
